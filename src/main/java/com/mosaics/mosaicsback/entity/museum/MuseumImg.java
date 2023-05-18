@@ -30,7 +30,7 @@ public class MuseumImg {
     @Column(name = "file_content", columnDefinition = "oid")
     private byte @NonNull [] fileContent;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "museum_id", referencedColumnName = "id")
     private Museum museum;
 

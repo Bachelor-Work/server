@@ -20,7 +20,6 @@ public class MuseumModelsDTO {
     private String instagramURL;
     private String twitterURL;
     private byte @NonNull [] fileContent;
-    private String dominantColor;
 
     private List<String> modelName;
     private List<String> modelDescription;

@@ -1,0 +1,1 @@
+insert into museum_type values (1, 'Culture')

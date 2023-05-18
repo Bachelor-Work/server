@@ -6,8 +6,8 @@ import com.mosaics.mosaicsback.entity.museum.Museum;
 public class MuseumMapper {
 
     public static MuseumDTO toDto(Museum museum) {
-
         return MuseumDTO.builder()
+                .id(museum.getId())
                 .museumName(museum.getMuseumName())
                 .museumDescription(museum.getMuseumDescription())
                 .instagramURL(museum.getInstagramURL())

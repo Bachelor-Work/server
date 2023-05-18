@@ -1,6 +1,8 @@
 package com.mosaics.mosaicsback.entity.museum;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.mosaics.mosaicsback.entity.Model;
+import com.mosaics.mosaicsback.entity.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,8 +12,9 @@ import java.util.List;
 @Table(name = "museum")
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
-@RequiredArgsConstructor
 public class Museum {
 
     @Id
@@ -32,14 +35,19 @@ public class Museum {
     @Column(name = "twitter_url")
     private String twitterURL;
 
-    @OneToMany(mappedBy = "museum", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "museum", fetch = FetchType.EAGER, cascade=CascadeType.ALL)
     private List<Model> model;
 
-    @OneToOne(mappedBy = "museum", fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "museum", fetch = FetchType.EAGER, cascade=CascadeType.ALL)
     private MuseumImg museumImg;
 
-    @ManyToOne()
+    @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "museum_type_id", referencedColumnName = "id")
     private MuseumType museumType;
+
+    @OneToOne(cascade=CascadeType.ALL)
+    @JsonBackReference
+    @JoinColumn(name = "manager_id", referencedColumnName = "id")
+    private User user;
 
 }

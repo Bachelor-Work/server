@@ -1,7 +1,6 @@
 package com.mosaics.mosaicsback.util;
 
 import com.mosaics.mosaicsback.dto.MuseumDTO;
-import com.mosaics.mosaicsback.dto.MuseumModelsDTO;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

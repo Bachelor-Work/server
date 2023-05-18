@@ -7,15 +7,12 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class MuseumDTO {
+@ToString
+public class CreateMuseumDTO {
 
-    private Long id;
     private String museumName;
     private String museumDescription;
     private String instagramURL;
     private String twitterURL;
-    private byte @NonNull [] fileContent;
-    private String dominantColor;
     private String museumType;
-
 }

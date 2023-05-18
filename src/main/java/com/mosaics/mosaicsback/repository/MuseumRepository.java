@@ -20,7 +20,7 @@ public interface MuseumRepository extends JpaRepository<Museum, Long> {
     List<String> getAllMuseumsName();
 
     @Transactional
-    @Query("select m from Museum m where m.museumName like %:name%")
-    Page<Museum> getAllMuseumsByName(String name, Pageable pageable);
+    @Query("select m from Museum m inner join MuseumType mt on mt.id = m.museumType.id where m.museumName like %:name% and mt.type like %:category%")
+    Page<Museum> getAllMuseumsByName(String name, Pageable pageable, String category);
 
 }
