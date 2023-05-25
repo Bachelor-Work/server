@@ -46,21 +46,22 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody UserDTO userDTO) {
-        if (userRepository.findByEmail(userDTO.getEmail()).getEmail().equals(userDTO.getEmail())) {
+        if (userRepository.findByEmail(userDTO.getEmail()) == null) {
+            User user = User.builder()
+                    .email(userDTO.getEmail())
+                    .password(passwordEncoder.encode((userDTO.getPassword())))
+                    .nickname(userDTO.getNickname())
+                    .build();
+
+            Role roles = roleRepository.findByName("USER");
+            user.setRoles(Collections.singletonList(roles));
+
+            userRepository.save(user);
+        } else if (userRepository.findByEmail(userDTO.getEmail()).getEmail().equals(userDTO.getEmail())) {
             return new ResponseEntity<>("Email is taken!", HttpStatus.BAD_REQUEST);
         }
 
-        User user = User.builder()
-                .email(userDTO.getEmail())
-                .password(passwordEncoder.encode((userDTO.getPassword())))
-                .nickname(userDTO.getNickname())
-                .build();
-
-        Role roles = roleRepository.findByName("USER");
-        user.setRoles(Collections.singletonList(roles));
-
-        userRepository.save(user);
-
         return new ResponseEntity<>("User registered success!", HttpStatus.OK);
     }
+
 }
