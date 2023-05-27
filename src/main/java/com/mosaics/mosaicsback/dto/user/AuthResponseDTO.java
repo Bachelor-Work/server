@@ -9,15 +9,17 @@ import java.util.List;
 public class AuthResponseDTO {
 
     private Long id;
+    private String nickname;
     private String email;
     private List<String> role;
     private String accessToken;
     private String tokenType = "Bearer ";
 
-    public AuthResponseDTO(String accessToken, Long id, String email, List<Role> role) {
+    public AuthResponseDTO(String accessToken, Long id, String nickname, String email, List<Role> role) {
         this.accessToken = accessToken;
         this.id = id;
         this.role = role.stream().map(Role::getName).toList();
         this.email = email;
+        this.nickname = nickname;
     }
 }
