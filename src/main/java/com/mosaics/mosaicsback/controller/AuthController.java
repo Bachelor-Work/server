@@ -7,6 +7,7 @@ import com.mosaics.mosaicsback.entity.user.Role;
 import com.mosaics.mosaicsback.entity.user.User;
 import com.mosaics.mosaicsback.repository.RoleRepository;
 import com.mosaics.mosaicsback.repository.UserRepository;
+import com.mosaics.mosaicsback.util.EmailSender;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collections;
+import java.util.List;
 
 @RestController
 @RequestMapping("/auth")
@@ -35,13 +37,16 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDTO> login(@RequestBody UserDTO userDTO) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        userDTO.getEmail(),
-                        userDTO.getPassword()));
+        UsernamePasswordAuthenticationToken token1 = new UsernamePasswordAuthenticationToken(
+                userDTO.getEmail(),
+                userDTO.getPassword()
+        );
+        Authentication authentication = authenticationManager.authenticate(token1);
+        User user = userRepository.findByEmail(userDTO.getEmail());
+        List<Role> roles = user.getRoles().stream().toList();
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtGenerator.generateToken(authentication);
-        return new ResponseEntity<>(new AuthResponseDTO(token), HttpStatus.OK);
+        return new ResponseEntity<>(new AuthResponseDTO(token, user.getId(), user.getEmail(), roles), HttpStatus.OK);
     }
 
     @PostMapping("/register")
@@ -57,6 +62,9 @@ public class AuthController {
             user.setRoles(Collections.singletonList(roles));
 
             userRepository.save(user);
+
+            EmailSender.sendEmail(userDTO.getEmail());
+
         } else if (userRepository.findByEmail(userDTO.getEmail()).getEmail().equals(userDTO.getEmail())) {
             return new ResponseEntity<>("Email is taken!", HttpStatus.BAD_REQUEST);
         }
