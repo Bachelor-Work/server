@@ -41,6 +41,12 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/manager/request").hasRole("USER")
                                 .anyRequest().authenticated()
                 )
+                .logout().logoutUrl("/logout")
+                .logoutSuccessUrl("/museums")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
+                .permitAll()
+                .and()
                 .httpBasic();
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

@@ -26,8 +26,6 @@ public class User {
     private String email;
     @Column(name = "password")
     private String password;
-    @Column(name = "manager_allowed")
-    private Boolean managerAllowed;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
