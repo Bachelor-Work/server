@@ -3,12 +3,16 @@ package com.mosaics.mosaicsback.controller;
 import com.mosaics.mosaicsback.config.JWTGenerator;
 import com.mosaics.mosaicsback.dto.user.AuthResponseDTO;
 import com.mosaics.mosaicsback.dto.user.UserDTO;
+import com.mosaics.mosaicsback.dto.user.UserInfoDTO;
 import com.mosaics.mosaicsback.entity.user.Role;
 import com.mosaics.mosaicsback.entity.user.User;
+import com.mosaics.mosaicsback.mapper.UserInfoMapper;
+import com.mosaics.mosaicsback.mapper.UserMapper;
 import com.mosaics.mosaicsback.repository.RoleRepository;
 import com.mosaics.mosaicsback.repository.UserRepository;
 import com.mosaics.mosaicsback.util.EmailSender;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,10 +20,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -72,4 +73,10 @@ public class AuthController {
         return new ResponseEntity<>("User registered success!", HttpStatus.OK);
     }
 
+    @GetMapping("/user")
+    public ResponseEntity<UserInfoDTO> getUserData(@NonNull Authentication authentication) {
+        User user = userRepository.findByEmail(authentication.getName());
+        UserInfoDTO userDTO = UserInfoMapper.toDto(user);
+        return new ResponseEntity<>(userDTO, HttpStatus.OK);
+    }
 }
