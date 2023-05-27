@@ -30,14 +30,19 @@ public class MuseumImg {
     @Column(name = "file_content", columnDefinition = "oid")
     private byte @NonNull [] fileContent;
 
+    @NonNull
+    @Column(name = "color")
+    private String dominantColor;
+
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "museum_id", referencedColumnName = "id")
     private Museum museum;
 
-    public MuseumImg(String originalFilename, String contentType, byte[] bytes, Museum museum) {
+    public MuseumImg(String originalFilename, String contentType, byte[] bytes, String dominantColor, Museum museum) {
         this.fileName = originalFilename;
         this.typeOfFile = contentType;
         this.fileContent = bytes.clone();
+        this.dominantColor = dominantColor;
         this.setMuseum(museum);
     }
 }

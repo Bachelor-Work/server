@@ -6,6 +6,8 @@ import com.mosaics.mosaicsback.entity.user.User;
 
 public class UserInfoMapper {
 
+    private UserInfoMapper() {throw new IllegalStateException("Mapper utility class");}
+
     public static UserInfoDTO toDto(User user) {
         return UserInfoDTO.builder()
                 .id(user.getId())

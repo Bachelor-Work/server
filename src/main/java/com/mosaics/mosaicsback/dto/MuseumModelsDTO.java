@@ -19,10 +19,12 @@ public class MuseumModelsDTO {
 
     private String instagramURL;
     private String twitterURL;
-    private byte @NonNull [] fileContent;
+    private byte @NonNull [] imgContent;
+    private String imgType;
 
     private List<String> modelName;
     private List<String> modelDescription;
     private List<byte []> modelContent;
+    private List<String> modelType;
 
 }

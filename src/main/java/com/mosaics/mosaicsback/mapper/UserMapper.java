@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserMapper {
 
+//    private UserMapper() {throw new IllegalStateException("Mapper utility class");}
+
     public static UserDTO toDto(User user) {
         return UserDTO.builder()
                 .id(user.getId())

@@ -1,7 +1,5 @@
 package com.mosaics.mosaicsback.util;
 
-import com.mosaics.mosaicsback.dto.MuseumDTO;
-
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -67,16 +65,9 @@ public class ImgDominantColor {
         return true;
     }
 
-    public static List<MuseumDTO> getDominantPixel(List<MuseumDTO> list) {
+    public static String getDominantPixel(byte[] img) throws IOException {
+        BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(img));
 
-        return list.stream().peek(el -> {
-            try {
-                BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(el.getFileContent()));
-                String color = ImgDominantColor.getHexColor(bufferedImage);
-                el.setDominantColor(color);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }).toList();
+        return ImgDominantColor.getHexColor(bufferedImage);
     }
 }

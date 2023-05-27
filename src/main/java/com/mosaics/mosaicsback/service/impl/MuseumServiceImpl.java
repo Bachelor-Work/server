@@ -48,10 +48,9 @@ public class MuseumServiceImpl implements MuseumService {
         List<String> museumsName = museumRepository.getAllMuseumsName();
         List<String> museumType = museumTypeRepository.getListOfTypes();
 
-        List<MuseumDTO> museumModelsDTOS = ImgDominantColor.getDominantPixel(page.getContent());
 
         Map<String, Object> response = new HashMap<>();
-        response.put("museums", museumModelsDTOS);
+        response.put("museums", page.getContent());
         response.put("names", museumsName);
         response.put("museumTypes", museumType);
         response.put("currentPage", page.getNumber());
@@ -75,10 +74,8 @@ public class MuseumServiceImpl implements MuseumService {
         Page<MuseumDTO> page = museumRepository.getAllMuseumsByName(name, pageable, category)
                 .map(MuseumMapper::toDto);
 
-        List<MuseumDTO> museumModelsDTOS = ImgDominantColor.getDominantPixel(page.getContent());
-
         Map<String, Object> response = new HashMap<>();
-        response.put("museums", museumModelsDTOS);
+        response.put("museums", page.getContent());
         response.put("currentPage", page.getNumber());
         response.put("totalItems", page.getTotalElements());
         response.put("totalPages", page.getTotalPages());
@@ -107,6 +104,7 @@ public class MuseumServiceImpl implements MuseumService {
                 multipartFile.getOriginalFilename(),
                 multipartFile.getContentType(),
                 multipartFile.getBytes(),
+                ImgDominantColor.getDominantPixel(multipartFile.getBytes()),
                 museum
         );
 

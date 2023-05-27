@@ -44,11 +44,9 @@ public class EmailSender {
 
         });
 
-        // Used to debug SMTP issues
         session.setDebug(true);
 
         try {
-            // Create a default MimeMessage object.
             MimeMessage message = new MimeMessage(session);
             MimeBodyPart mimeBodyPart = new MimeBodyPart();
             mimeBodyPart.setFileName("Marker");
@@ -56,21 +54,12 @@ public class EmailSender {
             Multipart multipart = new MimeMultipart();
             multipart.addBodyPart(mimeBodyPart);
 
-            // Set From: header field of the header.
             message.setFrom(new InternetAddress(FROM));
-
-            // Set To: header field of the header.
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipientEmail));
-
-            // Set Subject: header field
             message.setSubject("Marker for AR");
-
-            // Now set the actual message
             message.setText("Download this image and use navigate It on web-camera for viewing AR models");
-
             message.setContent(multipart);
 
-            // Send message
             Transport.send(message);
 
         } catch (MessagingException e) {
