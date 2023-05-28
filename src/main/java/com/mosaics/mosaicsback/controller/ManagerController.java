@@ -8,10 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -24,9 +21,9 @@ public class ManagerController {
     private final UserService userService;
     private final ManagerRequestRepository repository;
 
-    @PostMapping("/request")
+    @PostMapping(value = "/request", consumes = "text/plain")
     public ResponseEntity<Void> requestManagerRole(@NonNull Authentication authentication,
-                                                   @NonNull @RequestParam("description") String description) {
+                                                   @NonNull @RequestBody String description) {
 
         User user = userService.findByEmail(authentication.getName());
         if (repository.findByUserId(user.getId()).isEmpty())
