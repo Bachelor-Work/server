@@ -104,10 +104,11 @@ public class MuseumServiceImpl implements MuseumService {
                 multipartFile.getOriginalFilename(),
                 multipartFile.getContentType(),
                 multipartFile.getBytes(),
-                ImgDominantColor.getDominantPixel(multipartFile.getBytes()),
+                ImgDominantColor.getHexColor(multipartFile.getBytes()),
                 museum
         );
 
+        assert museum != null;
         Optional<MuseumImg> museumImg = Optional.ofNullable(museum.getMuseumImg());
         museumImg.ifPresent(value -> museumImgRepository.deleteById(value.getId()));
 

@@ -5,69 +5,54 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.IntStream;
 
 public class ImgDominantColor {
-    public static String getHexColor(BufferedImage image) {
+
+    private ImgDominantColor() {throw new IllegalStateException("Utility class");}
+
+    public static String getHexColor(byte[] img) throws IOException {
+        BufferedImage image = ImageIO.read(new ByteArrayInputStream(img));
 
         Map<Integer, Integer> colorMap = new HashMap<>();
         int height = image.getHeight();
         int width = image.getWidth();
 
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                int rgb = image.getRGB(i, j);
-                if (!isGray(getRGBArr(rgb))) {
-                    Integer counter = colorMap.get(rgb);
-                    if (counter == null) {
-                        counter = 0;
-                    }
+        IntStream.range(0, width)
+                .flatMap(i -> IntStream.range(0, height)
+                        .map(j -> image.getRGB(i, j)))
+                .filter(rgb -> !isGray(getRGBArr(rgb)))
+                .forEach(rgb -> colorMap.put(rgb, colorMap.getOrDefault(rgb, 0) + 1));
 
-                    colorMap.put(rgb, ++counter);
-                }
-            }
-        }
 
         return getMostCommonColor(colorMap);
     }
 
     private static String getMostCommonColor(Map<Integer, Integer> map) {
-        List<Map.Entry<Integer, Integer>> list = new LinkedList<>(map.entrySet());
+        Map.Entry<Integer, Integer> entry = map.entrySet()
+                .stream()
+                .max(Map.Entry.comparingByValue())
+                .orElseThrow(NoSuchElementException::new);
 
-        Collections.sort(list, (Map.Entry<Integer, Integer> obj1, Map.Entry<Integer, Integer> obj2)
-                -> ((Comparable) obj1.getValue()).compareTo(obj2.getValue()));
-
-        Map.Entry<Integer, Integer> entry = list.get(list.size() - 1);
         int[] rgb = getRGBArr(entry.getKey());
 
-        return "#" + Integer.toHexString(rgb[0])
-                + Integer.toHexString(rgb[1])
-                + Integer.toHexString(rgb[2]);
+        return String.format("#%02x%02x%02x", rgb[0], rgb[1], rgb[2]);
     }
 
-    private static int[] getRGBArr(int pixel) {
-        int red = (pixel >> 16) & 0xff;
-        int green = (pixel >> 8) & 0xff;
-        int blue = (pixel) & 0xff;
 
-        return new int[]{red, green, blue};
+    private static int[] getRGBArr(int pixel) {
+        return new int[]{
+                (pixel >> 16) & 0xff,
+                (pixel >> 8) & 0xff,
+                (pixel) & 0xff
+        };
     }
 
     private static boolean isGray(int[] rgbArr) {
-        int rgDiff = rgbArr[0] - rgbArr[1];
-        int rbDiff = rgbArr[0] - rgbArr[2];
-        // Filter out black, white and grays...... (tolerance within 10 pixels)
+        int rgDiff = Math.abs(rgbArr[0] - rgbArr[1]);
+        int rbDiff = Math.abs(rgbArr[0] - rgbArr[2]);
+
         int tolerance = 10;
-        if (rgDiff > tolerance || rgDiff < -tolerance) {
-            if (rbDiff > tolerance || rbDiff < -tolerance) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public static String getDominantPixel(byte[] img) throws IOException {
-        BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(img));
-
-        return ImgDominantColor.getHexColor(bufferedImage);
+        return rgDiff <= tolerance && rbDiff <= tolerance;
     }
 }
