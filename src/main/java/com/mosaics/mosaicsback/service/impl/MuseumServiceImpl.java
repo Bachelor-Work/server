@@ -90,7 +90,7 @@ public class MuseumServiceImpl implements MuseumService {
         Museum museum = null;
 
         if (museumRepository.findAll().stream().filter(element -> element.getMuseumName().equals(createdMuseumDTO.getMuseumName())).toList().isEmpty()) {
-             museum = museumRepository.save(Museum.builder()
+            museum = museumRepository.save(Museum.builder()
                     .museumName(createdMuseumDTO.getMuseumName())
                     .museumDescription(createdMuseumDTO.getMuseumDescription())
                     .instagramURL(createdMuseumDTO.getInstagramURL())
@@ -98,22 +98,15 @@ public class MuseumServiceImpl implements MuseumService {
                     .user(userService.findByEmail(authentication.getName()))
                     .museumType(museumTypeRepository.getByType(createdMuseumDTO.getMuseumType()))
                     .build());
+            MuseumImg img = new MuseumImg(
+                    multipartFile.getOriginalFilename(),
+                    multipartFile.getContentType(),
+                    multipartFile.getBytes(),
+                    ImgDominantColor.getHexColor(multipartFile.getBytes()),
+                    museum);
+            museumImgRepository.save(img);
+            return true;
         }
-
-        MuseumImg img = new MuseumImg(
-                multipartFile.getOriginalFilename(),
-                multipartFile.getContentType(),
-                multipartFile.getBytes(),
-                ImgDominantColor.getHexColor(multipartFile.getBytes()),
-                museum
-        );
-
-        assert museum != null;
-        Optional<MuseumImg> museumImg = Optional.ofNullable(museum.getMuseumImg());
-        museumImg.ifPresent(value -> museumImgRepository.deleteById(value.getId()));
-
-        museumImgRepository.save(img);
-
-        return true;
+        return false;
     }
 }

@@ -22,9 +22,6 @@ public class MuseumModelsDTO {
     private byte @NonNull [] imgContent;
     private String imgType;
 
-    private List<String> modelName;
-    private List<String> modelDescription;
-    private List<byte []> modelContent;
-    private List<String> modelType;
+    private List<ModelDTO> modelDTO;
 
 }
